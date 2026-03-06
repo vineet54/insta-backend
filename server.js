@@ -13,24 +13,26 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// ===== TEST ROUTE (IMPORTANT FOR RENDER) =====
+app.get("/", (req, res) => {
+  res.send("🚀 Backend is running successfully!");
+});
+
 // ===== REGISTER ROUTE =====
 app.post("/register", async (req, res) => {
   try {
     const { username, email, password } = req.body;
 
-    // 🔹 Check if all fields exist
     if (!username || !email || !password) {
       return res.status(400).json({ msg: "All fields are required" });
     }
 
-    // 🔹 Check if user already exists
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
       return res.status(400).json({ msg: "User already exists" });
     }
 
-    // 🔹 Create new user
     const newUser = new User({
       username,
       email,
